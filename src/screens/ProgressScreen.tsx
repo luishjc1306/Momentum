@@ -38,7 +38,7 @@ function ChartShell({ title, icon: Icon, children }: { title: string; icon: type
 function EmptyChart() {
   return (
     <div className="grid h-full place-items-center rounded-lg border border-dashed border-stone-300 bg-stone-50 px-4 text-center text-sm font-semibold text-stone-500">
-      No logged data yet.
+      Demo placeholder. Your real chart appears after you log data.
     </div>
   );
 }

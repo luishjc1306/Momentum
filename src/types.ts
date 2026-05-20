@@ -2,14 +2,24 @@ export type CoachingStyle =
   | 'Supportive'
   | 'Straightforward'
   | 'Science-based'
-  | 'Funny gym bro'
-  | 'Doctor mode';
+  | 'Funny'
+  | 'Balanced';
+
+export type MainGoal =
+  | 'Lose weight'
+  | 'Build muscle'
+  | 'Improve energy'
+  | 'Improve sleep'
+  | 'Stay consistent'
+  | 'Just exploring';
 
 export type SleepQuality = 'Poor' | 'Okay' | 'Good' | 'Great';
 export type MoodEnergy = 'Low' | 'Steady' | 'Good' | 'High';
 
 export interface UserProfile {
   nickname: string;
+  age?: number;
+  mainGoals: MainGoal[];
   onboardedAt: string;
 }
 

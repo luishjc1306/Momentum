@@ -7,7 +7,7 @@ const items: Array<{ id: Screen; label: string; icon: typeof Home }> = [
   { id: 'foods', label: 'Foods', icon: Salad },
   { id: 'progress', label: 'Charts', icon: BarChart3 },
   { id: 'rewards', label: 'Rewards', icon: Trophy },
-  { id: 'goals', label: 'Goals', icon: Settings },
+  { id: 'goals', label: 'Settings', icon: Settings },
 ];
 
 interface BottomNavProps {

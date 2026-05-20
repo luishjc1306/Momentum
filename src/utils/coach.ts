@@ -41,10 +41,10 @@ export const styleCoachMessage = (message: string, style: UserGoals['coachingSty
       return message.replace('Big green-light day: ', '').replace('No drama: ', '');
     case 'Science-based':
       return `${message} Focus on repeatable inputs: protein, energy balance, sleep, and low-friction activity.`;
-    case 'Funny gym bro':
-      return `${message} Respectfully, your future self is already flexing.`;
-    case 'Doctor mode':
-      return `${message} Wellness note: this is lifestyle coaching, not medical guidance.`;
+    case 'Funny':
+      return `${message} Your future self is already giving you a tiny high-five.`;
+    case 'Balanced':
+      return `${message} Keep it simple: one useful action, then move on with your day.`;
     default:
       return message;
   }

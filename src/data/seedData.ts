@@ -1,8 +1,17 @@
-import type { Achievement, DailyLog, FoodPreference, Quest, UserGoals, UserProfile, WellnessState } from '../types';
+import type { Achievement, DailyLog, FoodPreference, MainGoal, Quest, UserGoals, UserProfile, WellnessState } from '../types';
 
 export const todayKey = () => new Date().toISOString().slice(0, 10);
 
-export const coachingStyles = ['Supportive', 'Straightforward', 'Science-based', 'Funny gym bro', 'Doctor mode'] as const;
+export const coachingStyles = ['Supportive', 'Straightforward', 'Science-based', 'Funny', 'Balanced'] as const;
+
+export const mainGoalOptions: MainGoal[] = [
+  'Lose weight',
+  'Build muscle',
+  'Improve energy',
+  'Improve sleep',
+  'Stay consistent',
+  'Just exploring',
+];
 
 export const suggestedFoods: FoodPreference[] = [
   { id: 'rotisserie-chicken', name: 'rotisserie chicken', category: 'protein', notes: 'Simple protein anchor.' },
@@ -69,32 +78,35 @@ export const buildQuests = (state: WellnessState): Quest[] => {
   const today = state.logs.find((log) => log.date === todayKey());
   const weeklyWorkouts = state.logs.filter((log) => log.workoutDurationMinutes > 0).length;
   const weeklyMiles = state.logs.reduce((sum, log) => sum + log.cardioDistanceMiles, 0);
+  const hasNutritionTarget = state.goals.proteinTarget > 0;
+  const hasWalkingTarget = state.goals.walkingTargetMiles > 0;
+  const hasWorkoutTarget = state.goals.workoutTargetPerWeek > 0;
 
   return [
     {
       id: 'daily-protein',
-      title: 'Protein power',
-      description: 'Reach your protein target today.',
-      progress: Math.min(today?.protein ?? 0, state.goals.proteinTarget),
-      target: state.goals.proteinTarget,
+      title: hasNutritionTarget ? 'Protein power' : 'Log a meal',
+      description: hasNutritionTarget ? 'Reach your protein target today.' : 'Add one meal or snack when you are ready.',
+      progress: hasNutritionTarget ? Math.min(today?.protein ?? 0, state.goals.proteinTarget) : today?.meals.length ? 1 : 0,
+      target: hasNutritionTarget ? state.goals.proteinTarget : 1,
       xp: 35,
       cadence: 'daily',
     },
     {
       id: 'daily-walk',
-      title: 'Move the meter',
-      description: 'Hit your walking or cardio target.',
-      progress: Math.min(today?.cardioDistanceMiles ?? 0, state.goals.walkingTargetMiles),
-      target: state.goals.walkingTargetMiles,
+      title: hasWalkingTarget ? 'Move the meter' : 'Tiny movement',
+      description: hasWalkingTarget ? 'Hit your walking or cardio target.' : 'Log any walk, workout, or movement note.',
+      progress: hasWalkingTarget ? Math.min(today?.cardioDistanceMiles ?? 0, state.goals.walkingTargetMiles) : today?.workoutDurationMinutes || today?.cardioDistanceMiles ? 1 : 0,
+      target: hasWalkingTarget ? state.goals.walkingTargetMiles : 1,
       xp: 25,
       cadence: 'daily',
     },
     {
       id: 'weekly-workouts',
-      title: 'Training rhythm',
-      description: 'Complete your weekly workout target.',
-      progress: Math.min(weeklyWorkouts, state.goals.workoutTargetPerWeek),
-      target: state.goals.workoutTargetPerWeek,
+      title: hasWorkoutTarget ? 'Training rhythm' : 'Build rhythm',
+      description: hasWorkoutTarget ? 'Complete your weekly workout target.' : 'Log your first movement session this week.',
+      progress: hasWorkoutTarget ? Math.min(weeklyWorkouts, state.goals.workoutTargetPerWeek) : Math.min(weeklyWorkouts, 1),
+      target: hasWorkoutTarget ? state.goals.workoutTargetPerWeek : 1,
       xp: 100,
       cadence: 'weekly',
     },

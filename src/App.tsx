@@ -23,7 +23,7 @@ export default function App() {
   const activeLog = state.logs.find((log) => log.date === todayKey()) ?? buildEmptyDailyLog();
 
   return (
-    <div className="min-h-screen bg-[#f6f2ea] text-ink">
+    <div className="min-h-screen bg-[#f6f2ea] text-ink dark:bg-[#101715] dark:text-white">
       <main className="mx-auto max-w-3xl px-4 pb-28 pt-5 sm:px-6">
         {screen === 'dashboard' && <Dashboard state={state} quests={quests} onNavigate={setScreen} />}
         {screen === 'log' && <DailyLogScreen state={state} setState={setState} activeLog={activeLog} />}

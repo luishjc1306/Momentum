@@ -10,7 +10,17 @@ export const loadState = (): StoredWellnessState => {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return null;
     const parsed = JSON.parse(raw) as WellnessState;
-    return { ...parsed, logs: sortLogs(parsed.logs ?? []), foods: parsed.foods ?? [] };
+    return {
+      ...parsed,
+      profile: {
+        nickname: parsed.profile?.nickname ?? 'friend',
+        age: parsed.profile?.age,
+        mainGoals: parsed.profile?.mainGoals?.length ? parsed.profile.mainGoals : ['Just exploring'],
+        onboardedAt: parsed.profile?.onboardedAt ?? new Date().toISOString(),
+      },
+      logs: sortLogs(parsed.logs ?? []),
+      foods: parsed.foods ?? [],
+    };
   } catch {
     return null;
   }

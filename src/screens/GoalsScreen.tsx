@@ -1,4 +1,4 @@
-import { RotateCcw, Save } from 'lucide-react';
+import { RotateCcw, Save, UserRound } from 'lucide-react';
 import { useState } from 'react';
 import { Card } from '../components/Card';
 import { Field, SelectField } from '../components/forms';
@@ -16,10 +16,11 @@ export function GoalsScreen({ state, setState, onReset }: GoalsScreenProps) {
   const [goals, setGoals] = useState<UserGoals>(state.goals);
   const update = <K extends keyof UserGoals>(key: K, value: UserGoals[K]) => setGoals((current) => ({ ...current, [key]: value }));
   const numberValue = (value: string) => Number(value || 0);
+  const visibleNumber = (value: number) => (value === 0 ? '' : value);
 
   const save = () => setState(updateGoals(state, goals));
   const reset = () => {
-    if (window.confirm('Reset Momentum and delete all local app data?')) {
+    if (window.confirm('Reset onboarding and delete all local Momentum data?')) {
       onReset();
     }
   };
@@ -27,21 +28,30 @@ export function GoalsScreen({ state, setState, onReset }: GoalsScreenProps) {
   return (
     <div className="space-y-4">
       <header>
-        <p className="text-sm font-bold uppercase tracking-wide text-lagoon">Personalized goals</p>
-        <h1 className="text-3xl font-black">Settings</h1>
-        <p className="mt-1 text-sm text-stone-600">Lifestyle targets only. Future clinical or disease-specific guidance should go through proper review.</p>
+        <p className="text-sm font-bold uppercase tracking-wide text-lagoon">Settings</p>
+        <h1 className="text-3xl font-black">Your Momentum</h1>
+        <p className="mt-1 text-sm text-stone-600">Keep this light. Detailed targets can come later, once the habit is alive.</p>
       </header>
 
-      <Card>
-        <div className="grid gap-3 sm:grid-cols-2">
-          <Field label="Start date" type="date" value={goals.startDate} onChange={(event) => update('startDate', event.target.value)} />
-          <Field label="Starting weight" type="number" step="0.1" value={goals.startingWeight} onChange={(event) => update('startingWeight', numberValue(event.target.value))} />
-          <Field label="Goal weight" type="number" step="0.1" value={goals.goalWeight} onChange={(event) => update('goalWeight', numberValue(event.target.value))} />
-          <Field label="Daily calorie target" type="number" value={goals.dailyCalorieTarget} onChange={(event) => update('dailyCalorieTarget', numberValue(event.target.value))} />
-          <Field label="Protein target (g)" type="number" value={goals.proteinTarget} onChange={(event) => update('proteinTarget', numberValue(event.target.value))} />
-          <Field label="Workout target per week" type="number" value={goals.workoutTargetPerWeek} onChange={(event) => update('workoutTargetPerWeek', numberValue(event.target.value))} />
-          <Field label="Walking/cardio target (mi)" type="number" step="0.1" value={goals.walkingTargetMiles} onChange={(event) => update('walkingTargetMiles', numberValue(event.target.value))} />
-          <Field label="Sleep target (hours)" type="number" step="0.1" value={goals.sleepTargetHours} onChange={(event) => update('sleepTargetHours', numberValue(event.target.value))} />
+      <Card className="bg-white/80 backdrop-blur-xl dark:bg-white/10 dark:text-white">
+        <div className="flex items-start gap-3">
+          <div className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-cream text-lagoon dark:bg-white/10 dark:text-mint">
+            <UserRound size={20} />
+          </div>
+          <div>
+            <p className="text-sm font-bold uppercase tracking-wide text-stone-500 dark:text-white/50">Profile</p>
+            <h2 className="text-xl font-black">{state.profile.nickname}</h2>
+            <p className="mt-1 text-sm text-stone-600 dark:text-white/65">
+              {state.profile.age ? `${state.profile.age} years old · ` : ''}
+              {state.profile.mainGoals.join(', ')}
+            </p>
+            <p className="mt-3 text-sm text-stone-500 dark:text-white/55">Editable profile fields will live here when the profile system expands.</p>
+          </div>
+        </div>
+      </Card>
+
+      <Card className="dark:bg-white/10 dark:text-white">
+        <div className="grid gap-3">
           <SelectField label="Preferred coaching style" value={goals.coachingStyle} onChange={(event) => update('coachingStyle', event.target.value as CoachingStyle)}>
             {coachingStyles.map((style) => (
               <option key={style}>{style}</option>
@@ -50,24 +60,35 @@ export function GoalsScreen({ state, setState, onReset }: GoalsScreenProps) {
         </div>
       </Card>
 
-      <Card className="bg-cream shadow-none">
-        <p className="text-sm font-bold uppercase tracking-wide text-lagoon">Future integrations</p>
-        <p className="mt-2 text-sm leading-6 text-stone-700">
-          Authentication, backend sync, Apple Health, Oura, WHOOP, barcode scanning, photo food logging, voice logging, and paid subscription gates can attach around the storage and logging modules without changing the core screens.
-        </p>
+      <Card className="dark:bg-white/10 dark:text-white">
+        <details>
+          <summary className="cursor-pointer text-lg font-black">Progressive goals</summary>
+          <p className="mt-2 text-sm leading-6 text-stone-600 dark:text-white/65">
+            These are optional and intentionally tucked away. Momentum should earn the right to ask for more detail.
+          </p>
+          <div className="mt-4 grid gap-3 sm:grid-cols-2">
+            <Field label="Starting weight" type="number" step="0.1" value={visibleNumber(goals.startingWeight)} onChange={(event) => update('startingWeight', numberValue(event.target.value))} placeholder="Add later" />
+            <Field label="Goal weight" type="number" step="0.1" value={visibleNumber(goals.goalWeight)} onChange={(event) => update('goalWeight', numberValue(event.target.value))} placeholder="Add later" />
+            <Field label="Daily calorie target" type="number" value={visibleNumber(goals.dailyCalorieTarget)} onChange={(event) => update('dailyCalorieTarget', numberValue(event.target.value))} placeholder="Add later" />
+            <Field label="Protein target (g)" type="number" value={visibleNumber(goals.proteinTarget)} onChange={(event) => update('proteinTarget', numberValue(event.target.value))} placeholder="Add later" />
+            <Field label="Workout target per week" type="number" value={visibleNumber(goals.workoutTargetPerWeek)} onChange={(event) => update('workoutTargetPerWeek', numberValue(event.target.value))} placeholder="Add later" />
+            <Field label="Walking/cardio target (mi)" type="number" step="0.1" value={visibleNumber(goals.walkingTargetMiles)} onChange={(event) => update('walkingTargetMiles', numberValue(event.target.value))} placeholder="Add later" />
+            <Field label="Sleep target (hours)" type="number" step="0.1" value={visibleNumber(goals.sleepTargetHours)} onChange={(event) => update('sleepTargetHours', numberValue(event.target.value))} placeholder="Add later" />
+          </div>
+        </details>
       </Card>
 
-      <button type="button" onClick={save} className="flex w-full items-center justify-center gap-2 rounded-lg bg-ink px-5 py-4 text-base font-black text-white shadow-soft">
-        <Save size={18} /> Save goals
+      <button type="button" onClick={save} className="flex w-full items-center justify-center gap-2 rounded-2xl bg-ink px-5 py-4 text-base font-black text-white shadow-soft dark:bg-mint dark:text-ink">
+        <Save size={18} /> Save settings
       </button>
 
-      <Card className="border-coral/20 bg-white shadow-none">
+      <Card className="border-coral/20 bg-white shadow-none dark:bg-white/10 dark:text-white">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="text-sm font-bold uppercase tracking-wide text-coral">Reset app data</p>
-            <p className="mt-1 text-sm text-stone-600">Deletes onboarding, goals, logs, foods, XP, and achievements from localStorage.</p>
+            <p className="text-sm font-bold uppercase tracking-wide text-coral">Reset onboarding</p>
+            <p className="mt-1 text-sm text-stone-600 dark:text-white/65">Deletes onboarding, goals, logs, foods, XP, and achievements from localStorage.</p>
           </div>
-          <button type="button" onClick={reset} className="flex items-center justify-center gap-2 rounded-lg border border-coral px-4 py-3 font-black text-coral">
+          <button type="button" onClick={reset} className="flex items-center justify-center gap-2 rounded-2xl border border-coral px-4 py-3 font-black text-coral">
             <RotateCcw size={18} /> Reset
           </button>
         </div>

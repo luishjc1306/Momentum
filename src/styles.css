@@ -26,6 +26,18 @@ html {
   background: #f6f2ea;
 }
 
+@media (prefers-color-scheme: dark) {
+  :root {
+    color: #f7f3ea;
+    background: #101715;
+  }
+
+  html,
+  body {
+    background: #101715;
+  }
+}
+
 button,
 input,
 select,
