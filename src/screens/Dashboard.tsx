@@ -2,10 +2,11 @@ import { Award, Bed, CalendarDays, Dumbbell, Flame, Footprints, MessageCircle, S
 import { Card } from '../components/Card';
 import { MetricCard } from '../components/MetricCard';
 import { ProgressBar } from '../components/ProgressBar';
+import { buildEmptyDailyLog, todayKey } from '../data/seedData';
 import type { Quest, WellnessState } from '../types';
 import type { Screen } from '../App';
 import { generateCoachMessage, styleCoachMessage } from '../utils/coach';
-import { calculateDailyScore, calculateStreak, getJourneyDay, getLatestLog, getLevel, getWeightDelta } from '../utils/metrics';
+import { calculateDailyScore, calculateStreak, getJourneyDay, getLevel, getWeightDelta } from '../utils/metrics';
 
 interface DashboardProps {
   state: WellnessState;
@@ -14,7 +15,8 @@ interface DashboardProps {
 }
 
 export function Dashboard({ state, quests, onNavigate }: DashboardProps) {
-  const log = getLatestLog(state.logs);
+  const todayLog = state.logs.find((entry) => entry.date === todayKey());
+  const log = todayLog ?? buildEmptyDailyLog();
   const score = calculateDailyScore(log, state.goals);
   const streak = calculateStreak(state.logs);
   const level = getLevel(state.xp);
@@ -29,7 +31,7 @@ export function Dashboard({ state, quests, onNavigate }: DashboardProps) {
             <p className="flex items-center gap-2 text-sm text-white/75">
               <CalendarDays size={16} /> {formattedDate} · Journey day {getJourneyDay(state.goals.startDate)}
             </p>
-            <h1 className="mt-3 text-3xl font-black leading-tight">Momentum Coach</h1>
+            <h1 className="mt-3 text-3xl font-black leading-tight">Hi, {state.profile.nickname}</h1>
             <p className="mt-2 max-w-xl text-sm text-white/75">Wellness habits, nutrition, movement, sleep, and progress. No diagnosis, no shame spiral.</p>
           </div>
           <button
@@ -46,7 +48,7 @@ export function Dashboard({ state, quests, onNavigate }: DashboardProps) {
         <MetricCard icon={Flame} label="Streak" value={`${streak} days`} />
         <MetricCard icon={Target} label="Daily score" value={`${score}/100`} progress={score} max={100} accent="bg-coral" />
         <MetricCard icon={Award} label="Level" value={`${level.level}`} target={`${level.progress}/${level.nextLevelXp} XP`} progress={level.progress} max={level.nextLevelXp} accent="bg-sun" />
-        <MetricCard icon={Scale} label="Weight trend" value={`${getWeightDelta(state)} lb`} target={`${log.weight} lb today`} />
+        <MetricCard icon={Scale} label="Weight trend" value={state.logs.length ? `${getWeightDelta(state)} lb` : 'No logs'} target={todayLog?.weight ? `${todayLog.weight} lb today` : `start ${state.goals.startingWeight} lb`} />
       </div>
 
       <Card className="bg-white">
@@ -62,10 +64,10 @@ export function Dashboard({ state, quests, onNavigate }: DashboardProps) {
       </Card>
 
       <div className="grid gap-3 sm:grid-cols-2">
-        <MetricCard icon={Utensils} label="Calories" value={`${log.calories}`} target={`goal ${state.goals.dailyCalorieTarget}`} progress={log.calories} max={state.goals.dailyCalorieTarget} accent="bg-lagoon" />
-        <MetricCard icon={Dumbbell} label="Protein" value={`${log.protein}g`} target={`goal ${state.goals.proteinTarget}g`} progress={log.protein} max={state.goals.proteinTarget} />
-        <MetricCard icon={Footprints} label="Walk/cardio" value={`${log.cardioDistanceMiles} mi`} target={`${log.steps.toLocaleString()} steps`} progress={log.cardioDistanceMiles} max={state.goals.walkingTargetMiles} accent="bg-coral" />
-        <MetricCard icon={Bed} label="Sleep" value={`${log.sleepHours}h`} target={`${log.sleepQuality} quality`} progress={log.sleepHours} max={state.goals.sleepTargetHours} accent="bg-sun" />
+        <MetricCard icon={Utensils} label="Calories" value={todayLog ? `${log.calories}` : 'Not logged'} target={`goal ${state.goals.dailyCalorieTarget}`} progress={log.calories} max={state.goals.dailyCalorieTarget} accent="bg-lagoon" />
+        <MetricCard icon={Dumbbell} label="Protein" value={todayLog ? `${log.protein}g` : 'Not logged'} target={`goal ${state.goals.proteinTarget}g`} progress={log.protein} max={state.goals.proteinTarget} />
+        <MetricCard icon={Footprints} label="Walk/cardio" value={todayLog ? `${log.cardioDistanceMiles} mi` : 'Not logged'} target={todayLog ? `${log.steps.toLocaleString()} steps` : 'optional today'} progress={log.cardioDistanceMiles} max={Math.max(1, state.goals.walkingTargetMiles)} accent="bg-coral" />
+        <MetricCard icon={Bed} label="Sleep" value={todayLog ? `${log.sleepHours}h` : 'Not logged'} target={todayLog ? `${log.sleepQuality} quality` : `goal ${state.goals.sleepTargetHours}h`} progress={log.sleepHours} max={state.goals.sleepTargetHours} accent="bg-sun" />
       </div>
 
       <Card>

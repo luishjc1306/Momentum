@@ -35,6 +35,14 @@ function ChartShell({ title, icon: Icon, children }: { title: string; icon: type
   );
 }
 
+function EmptyChart() {
+  return (
+    <div className="grid h-full place-items-center rounded-lg border border-dashed border-stone-300 bg-stone-50 px-4 text-center text-sm font-semibold text-stone-500">
+      No logged data yet.
+    </div>
+  );
+}
+
 export function ProgressScreen({ state }: ProgressScreenProps) {
   const chartData = state.logs.map((log) => ({
     date: log.date.slice(5),
@@ -56,63 +64,83 @@ export function ProgressScreen({ state }: ProgressScreenProps) {
       </header>
 
       <ChartShell title="Weight over time" icon={Scale}>
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={chartData}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#e7dfd2" />
-            <XAxis dataKey="date" />
-            <YAxis domain={['dataMin - 1', 'dataMax + 1']} />
-            <Tooltip />
-            <Line type="monotone" dataKey="weight" stroke="#257e8c" strokeWidth={3} dot={{ r: 4 }} />
-          </LineChart>
-        </ResponsiveContainer>
+        {chartData.length ? (
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={chartData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#e7dfd2" />
+              <XAxis dataKey="date" />
+              <YAxis domain={['dataMin - 1', 'dataMax + 1']} />
+              <Tooltip />
+              <Line type="monotone" dataKey="weight" stroke="#257e8c" strokeWidth={3} dot={{ r: 4 }} />
+            </LineChart>
+          </ResponsiveContainer>
+        ) : (
+          <EmptyChart />
+        )}
       </ChartShell>
 
       <ChartShell title="Calories over time" icon={BarChart3}>
-        <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={chartData}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#e7dfd2" />
-            <XAxis dataKey="date" />
-            <YAxis />
-            <Tooltip />
-            <Area type="monotone" dataKey="calories" stroke="#ef6f61" fill="#ef6f61" fillOpacity={0.18} />
-          </AreaChart>
-        </ResponsiveContainer>
+        {chartData.length ? (
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={chartData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#e7dfd2" />
+              <XAxis dataKey="date" />
+              <YAxis />
+              <Tooltip />
+              <Area type="monotone" dataKey="calories" stroke="#ef6f61" fill="#ef6f61" fillOpacity={0.18} />
+            </AreaChart>
+          </ResponsiveContainer>
+        ) : (
+          <EmptyChart />
+        )}
       </ChartShell>
 
       <ChartShell title="Protein over time" icon={Activity}>
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={chartData}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#e7dfd2" />
-            <XAxis dataKey="date" />
-            <YAxis />
-            <Tooltip />
-            <Bar dataKey="protein" fill="#2bbf8a" radius={[6, 6, 0, 0]} />
-          </BarChart>
-        </ResponsiveContainer>
+        {chartData.length ? (
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={chartData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#e7dfd2" />
+              <XAxis dataKey="date" />
+              <YAxis />
+              <Tooltip />
+              <Bar dataKey="protein" fill="#2bbf8a" radius={[6, 6, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        ) : (
+          <EmptyChart />
+        )}
       </ChartShell>
 
       <ChartShell title="Workouts per week" icon={Dumbbell}>
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={chartData}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#e7dfd2" />
-            <XAxis dataKey="date" />
-            <YAxis allowDecimals={false} />
-            <Tooltip />
-            <Bar dataKey="workouts" fill="#f5b942" radius={[6, 6, 0, 0]} />
-          </BarChart>
-        </ResponsiveContainer>
+        {chartData.length ? (
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={chartData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#e7dfd2" />
+              <XAxis dataKey="date" />
+              <YAxis allowDecimals={false} />
+              <Tooltip />
+              <Bar dataKey="workouts" fill="#f5b942" radius={[6, 6, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        ) : (
+          <EmptyChart />
+        )}
       </ChartShell>
 
       <ChartShell title="Sleep over time" icon={Bed}>
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={chartData}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#e7dfd2" />
-            <XAxis dataKey="date" />
-            <YAxis />
-            <Tooltip />
-            <Line type="monotone" dataKey="sleep" stroke="#16211f" strokeWidth={3} dot={{ r: 4 }} />
-          </LineChart>
-        </ResponsiveContainer>
+        {chartData.length ? (
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={chartData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#e7dfd2" />
+              <XAxis dataKey="date" />
+              <YAxis />
+              <Tooltip />
+              <Line type="monotone" dataKey="sleep" stroke="#16211f" strokeWidth={3} dot={{ r: 4 }} />
+            </LineChart>
+          </ResponsiveContainer>
+        ) : (
+          <EmptyChart />
+        )}
       </ChartShell>
 
       <ChartShell title="XP / level progress" icon={Flame}>

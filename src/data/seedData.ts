@@ -1,27 +1,11 @@
-import type { Achievement, DailyLog, FoodPreference, Quest, UserGoals, WellnessState } from '../types';
+import type { Achievement, DailyLog, FoodPreference, Quest, UserGoals, UserProfile, WellnessState } from '../types';
 
 export const todayKey = () => new Date().toISOString().slice(0, 10);
 
-const daysAgo = (days: number) => {
-  const date = new Date();
-  date.setDate(date.getDate() - days);
-  return date.toISOString().slice(0, 10);
-};
+export const coachingStyles = ['Supportive', 'Straightforward', 'Science-based', 'Funny gym bro', 'Doctor mode'] as const;
 
-export const defaultGoals: UserGoals = {
-  startingWeight: 235,
-  goalWeight: 199,
-  dailyCalorieTarget: 2150,
-  proteinTarget: 180,
-  workoutTargetPerWeek: 4,
-  walkingTargetMiles: 2,
-  sleepTargetHours: 7.5,
-  coachingStyle: 'Supportive',
-  startDate: daysAgo(11),
-};
-
-export const seedFoods: FoodPreference[] = [
-  { id: 'rotisserie-chicken', name: 'rotisserie chicken', category: 'protein', notes: 'Easy protein anchor.' },
+export const suggestedFoods: FoodPreference[] = [
+  { id: 'rotisserie-chicken', name: 'rotisserie chicken', category: 'protein', notes: 'Simple protein anchor.' },
   { id: 'eggs', name: 'eggs', category: 'protein' },
   { id: 'rice', name: 'rice', category: 'carb' },
   { id: 'pasta', name: 'pasta', category: 'carb' },
@@ -41,158 +25,48 @@ export const seedFoods: FoodPreference[] = [
   { id: 'mexican-style-meals', name: 'Mexican-style meals', category: 'meal' },
 ];
 
-export const seedLogs: DailyLog[] = [
-  {
-    date: daysAgo(6),
-    weight: 232.8,
-    meals: [],
-    calories: 2210,
-    protein: 171,
-    carbs: 210,
-    fat: 74,
-    fiber: 25,
-    waterOz: 84,
-    workoutType: 'Strength',
-    workoutDurationMinutes: 48,
-    cardioDistanceMiles: 1.4,
-    steps: 7300,
-    sleepHours: 6.7,
-    sleepQuality: 'Okay',
-    moodEnergy: 'Good',
-    notes: 'Solid lift, a little hungry late.',
-  },
-  {
-    date: daysAgo(5),
-    weight: 232.4,
-    meals: [],
-    calories: 2075,
-    protein: 188,
-    carbs: 178,
-    fat: 68,
-    fiber: 29,
-    waterOz: 96,
-    workoutType: 'Walk',
-    workoutDurationMinutes: 35,
-    cardioDistanceMiles: 2.1,
-    steps: 9100,
-    sleepHours: 7.4,
-    sleepQuality: 'Good',
-    moodEnergy: 'Steady',
-    notes: 'Meal prep helped.',
-  },
-  {
-    date: daysAgo(4),
-    weight: 232.1,
-    meals: [],
-    calories: 2325,
-    protein: 176,
-    carbs: 230,
-    fat: 78,
-    fiber: 22,
-    waterOz: 72,
-    workoutType: 'Rest',
-    workoutDurationMinutes: 0,
-    cardioDistanceMiles: 0.8,
-    steps: 5200,
-    sleepHours: 5.9,
-    sleepQuality: 'Poor',
-    moodEnergy: 'Low',
-    notes: 'Stressful workday.',
-  },
-  {
-    date: daysAgo(3),
-    weight: 231.6,
-    meals: [],
-    calories: 2130,
-    protein: 184,
-    carbs: 190,
-    fat: 71,
-    fiber: 31,
-    waterOz: 88,
-    workoutType: 'Strength',
-    workoutDurationMinutes: 52,
-    cardioDistanceMiles: 1.6,
-    steps: 7800,
-    sleepHours: 7.8,
-    sleepQuality: 'Great',
-    moodEnergy: 'High',
-    notes: 'Great day.',
-  },
-  {
-    date: daysAgo(2),
-    weight: 231.3,
-    meals: [],
-    calories: 2050,
-    protein: 193,
-    carbs: 165,
-    fat: 64,
-    fiber: 34,
-    waterOz: 100,
-    workoutType: 'Walk',
-    workoutDurationMinutes: 45,
-    cardioDistanceMiles: 2.7,
-    steps: 10100,
-    sleepHours: 7.2,
-    sleepQuality: 'Good',
-    moodEnergy: 'Good',
-    notes: 'Hit protein early.',
-  },
-  {
-    date: daysAgo(1),
-    weight: 231.1,
-    meals: [],
-    calories: 2190,
-    protein: 168,
-    carbs: 205,
-    fat: 76,
-    fiber: 27,
-    waterOz: 78,
-    workoutType: 'Mobility',
-    workoutDurationMinutes: 25,
-    cardioDistanceMiles: 1.1,
-    steps: 6400,
-    sleepHours: 6.4,
-    sleepQuality: 'Okay',
-    moodEnergy: 'Steady',
-    notes: 'Kept momentum.',
-  },
-  {
-    date: todayKey(),
-    weight: 230.7,
-    meals: [
-      { id: 'meal-1', name: 'Eggs and sourdough', calories: 430, protein: 29, carbs: 42, fat: 16, fiber: 4 },
-      { id: 'meal-2', name: 'Rotisserie chicken rice bowl', calories: 620, protein: 55, carbs: 64, fat: 17, fiber: 8 },
-    ],
-    calories: 1480,
-    protein: 129,
-    carbs: 132,
-    fat: 44,
-    fiber: 19,
-    waterOz: 64,
-    workoutType: 'Strength',
-    workoutDurationMinutes: 40,
-    cardioDistanceMiles: 1.2,
-    steps: 6800,
-    sleepHours: 6.8,
-    sleepQuality: 'Good',
-    moodEnergy: 'Good',
-    notes: 'Need a higher-protein dinner.',
-  },
+export const achievementTemplates: Achievement[] = [
+  { id: 'first-workout', title: 'First workout logged', description: 'Log your first movement session.', unlocked: false },
+  { id: 'seven-day-streak', title: '7-day streak', description: 'Log activity seven days in a row.', unlocked: false },
+  { id: 'protein-goal', title: 'Protein goal hit', description: 'Reach your daily protein target.', unlocked: false },
+  { id: 'three-workouts', title: '3 workouts in one week', description: 'Complete three workouts in a week.', unlocked: false },
+  { id: 'sleep-goal', title: 'Sleep goal hit', description: 'Meet your sleep target for a day.', unlocked: false },
+  { id: 'calorie-goal', title: 'Calorie goal hit', description: 'Stay within your calorie target.', unlocked: false },
+  { id: 'ten-miles', title: 'Walked 10 total miles', description: 'Log ten miles of walking or cardio.', unlocked: false },
+  { id: 'meals-seven-days', title: 'Logged meals for 7 days', description: 'Track meals for seven days.', unlocked: false },
 ];
 
-export const seedAchievements: Achievement[] = [
-  { id: 'first-workout', title: 'First workout logged', description: 'Logged your first movement session.', unlocked: true, unlockedDate: daysAgo(6) },
-  { id: 'seven-day-streak', title: '7-day streak', description: 'Logged activity seven days in a row.', unlocked: true, unlockedDate: todayKey() },
-  { id: 'protein-goal', title: 'Protein goal hit', description: 'Reached your daily protein target.', unlocked: true, unlockedDate: daysAgo(2) },
-  { id: 'three-workouts', title: '3 workouts in one week', description: 'Completed three workouts in a week.', unlocked: true, unlockedDate: daysAgo(1) },
-  { id: 'sleep-goal', title: 'Sleep goal hit', description: 'Met your sleep target for a day.', unlocked: true, unlockedDate: daysAgo(3) },
-  { id: 'calorie-goal', title: 'Calorie goal hit', description: 'Stayed within your calorie target.', unlocked: true, unlockedDate: daysAgo(2) },
-  { id: 'ten-miles', title: 'Walked 10 total miles', description: 'Logged ten miles of walking or cardio.', unlocked: true, unlockedDate: daysAgo(1) },
-  { id: 'meals-seven-days', title: 'Logged meals for 7 days', description: 'Tracked meals for seven days.', unlocked: false },
-];
+export const buildEmptyDailyLog = (date = todayKey()): DailyLog => ({
+  date,
+  weight: 0,
+  meals: [],
+  calories: 0,
+  protein: 0,
+  carbs: 0,
+  fat: 0,
+  fiber: 0,
+  waterOz: 0,
+  workoutType: '',
+  workoutDurationMinutes: 0,
+  cardioDistanceMiles: 0,
+  steps: 0,
+  sleepHours: 0,
+  sleepQuality: 'Okay',
+  moodEnergy: 'Steady',
+  notes: '',
+});
+
+export const createInitialState = (profile: UserProfile, goals: UserGoals): WellnessState => ({
+  profile,
+  goals,
+  foods: [],
+  logs: [],
+  achievements: achievementTemplates,
+  xp: 0,
+});
 
 export const buildQuests = (state: WellnessState): Quest[] => {
-  const today = state.logs.find((log) => log.date === todayKey()) ?? state.logs[state.logs.length - 1];
+  const today = state.logs.find((log) => log.date === todayKey());
   const weeklyWorkouts = state.logs.filter((log) => log.workoutDurationMinutes > 0).length;
   const weeklyMiles = state.logs.reduce((sum, log) => sum + log.cardioDistanceMiles, 0);
 
@@ -201,7 +75,7 @@ export const buildQuests = (state: WellnessState): Quest[] => {
       id: 'daily-protein',
       title: 'Protein power',
       description: 'Reach your protein target today.',
-      progress: Math.min(today.protein, state.goals.proteinTarget),
+      progress: Math.min(today?.protein ?? 0, state.goals.proteinTarget),
       target: state.goals.proteinTarget,
       xp: 35,
       cadence: 'daily',
@@ -210,7 +84,7 @@ export const buildQuests = (state: WellnessState): Quest[] => {
       id: 'daily-walk',
       title: 'Move the meter',
       description: 'Hit your walking or cardio target.',
-      progress: Math.min(today.cardioDistanceMiles, state.goals.walkingTargetMiles),
+      progress: Math.min(today?.cardioDistanceMiles ?? 0, state.goals.walkingTargetMiles),
       target: state.goals.walkingTargetMiles,
       xp: 25,
       cadence: 'daily',
@@ -234,12 +108,4 @@ export const buildQuests = (state: WellnessState): Quest[] => {
       cadence: 'weekly',
     },
   ];
-};
-
-export const initialState: WellnessState = {
-  goals: defaultGoals,
-  foods: seedFoods,
-  logs: seedLogs,
-  achievements: seedAchievements,
-  xp: 860,
 };

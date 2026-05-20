@@ -4,6 +4,10 @@ const foodNames = (foods: FoodPreference[], category: FoodPreference['category']
   foods.filter((food) => food.category === category || food.category === 'meal').slice(0, 4).map((food) => food.name);
 
 export const generateCoachMessage = (log: DailyLog, goals: UserGoals, foods: FoodPreference[]) => {
+  if (log.calories === 0 && log.protein === 0 && log.workoutDurationMinutes === 0 && log.sleepHours === 0) {
+    return 'Fresh start. Log one meal, one weigh-in, or one walk today and Momentum will begin shaping feedback around your actual patterns.';
+  }
+
   const proteinGap = goals.proteinTarget - log.protein;
   const caloriesOver = log.calories - goals.dailyCalorieTarget;
   const proteinIdeas = foodNames(foods, 'protein');

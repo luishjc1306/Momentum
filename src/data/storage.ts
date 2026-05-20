@@ -1,27 +1,29 @@
-import { initialState } from './seedData';
-import type { DailyLog, FoodPreference, UserGoals, WellnessState } from '../types';
+import type { DailyLog, FoodPreference, StoredWellnessState, UserGoals, WellnessState } from '../types';
 
-const STORAGE_KEY = 'momentum-coach-state-v1';
+const STORAGE_KEY = 'momentum-state-v2';
+const LEGACY_STORAGE_KEY = 'momentum-coach-state-v1';
 
 const sortLogs = (logs: DailyLog[]) => [...logs].sort((a, b) => a.date.localeCompare(b.date));
 
-export const loadState = (): WellnessState => {
+export const loadState = (): StoredWellnessState => {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return initialState;
+    if (!raw) return null;
     const parsed = JSON.parse(raw) as WellnessState;
-    return { ...initialState, ...parsed, logs: sortLogs(parsed.logs ?? initialState.logs) };
+    return { ...parsed, logs: sortLogs(parsed.logs ?? []), foods: parsed.foods ?? [] };
   } catch {
-    return initialState;
+    return null;
   }
 };
 
-export const saveState = (state: WellnessState) => {
+export const saveState = (state: StoredWellnessState) => {
+  if (!state) return;
   localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...state, logs: sortLogs(state.logs) }));
 };
 
 export const resetState = () => {
   localStorage.removeItem(STORAGE_KEY);
+  localStorage.removeItem(LEGACY_STORAGE_KEY);
 };
 
 export const upsertLog = (state: WellnessState, log: DailyLog): WellnessState => {
@@ -36,7 +38,7 @@ export const updateGoals = (state: WellnessState, goals: UserGoals): WellnessSta
 
 export const addFoodPreference = (state: WellnessState, food: FoodPreference): WellnessState => ({
   ...state,
-  foods: [...state.foods, food],
+  foods: state.foods.some((entry) => entry.id === food.id) ? state.foods : [...state.foods, food],
 });
 
 // Future backend adapter boundary:

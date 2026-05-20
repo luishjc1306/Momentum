@@ -8,6 +8,11 @@ export type CoachingStyle =
 export type SleepQuality = 'Poor' | 'Okay' | 'Good' | 'Great';
 export type MoodEnergy = 'Low' | 'Steady' | 'Good' | 'High';
 
+export interface UserProfile {
+  nickname: string;
+  onboardedAt: string;
+}
+
 export interface UserGoals {
   startingWeight: number;
   goalWeight: number;
@@ -76,9 +81,12 @@ export interface Quest {
 }
 
 export interface WellnessState {
+  profile: UserProfile;
   goals: UserGoals;
   foods: FoodPreference[];
   logs: DailyLog[];
   achievements: Achievement[];
   xp: number;
 }
+
+export type StoredWellnessState = WellnessState | null;

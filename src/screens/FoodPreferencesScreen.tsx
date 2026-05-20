@@ -2,6 +2,7 @@ import { Plus, Salad } from 'lucide-react';
 import { useState } from 'react';
 import { Card } from '../components/Card';
 import { Field, SelectField } from '../components/forms';
+import { suggestedFoods } from '../data/seedData';
 import { addFoodPreference } from '../data/storage';
 import type { FoodPreference, WellnessState } from '../types';
 import { makeId } from '../utils/id';
@@ -21,12 +22,16 @@ export function FoodPreferencesScreen({ state, setState }: FoodPreferencesScreen
     setName('');
   };
 
+  const addSuggestedFood = (food: FoodPreference) => {
+    setState(addFoodPreference(state, food));
+  };
+
   return (
     <div className="space-y-4">
       <header>
         <p className="text-sm font-bold uppercase tracking-wide text-lagoon">Food preferences</p>
         <h1 className="text-3xl font-black">Your easy foods</h1>
-        <p className="mt-1 text-sm text-stone-600">The mock coach favors these when suggesting practical meals.</p>
+        <p className="mt-1 text-sm text-stone-600">Your list starts empty. Add foods you actually use, or pull from the optional suggestion library.</p>
       </header>
 
       <Card>
@@ -46,22 +51,59 @@ export function FoodPreferencesScreen({ state, setState }: FoodPreferencesScreen
         </div>
       </Card>
 
-      <div className="grid gap-3 sm:grid-cols-2">
-        {state.foods.map((food) => (
-          <Card key={food.id} className="shadow-none">
-            <div className="flex items-start gap-3">
-              <div className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-cream text-lagoon">
-                <Salad size={18} />
-              </div>
-              <div>
-                <p className="font-black capitalize">{food.name}</p>
-                <p className="mt-1 text-sm font-semibold capitalize text-stone-500">{food.category}</p>
-                {food.notes && <p className="mt-2 text-sm text-stone-600">{food.notes}</p>}
-              </div>
-            </div>
+      <section className="space-y-3">
+        <h2 className="text-xl font-black">Your foods</h2>
+        {state.foods.length === 0 ? (
+          <Card className="shadow-none">
+            <p className="text-sm text-stone-600">No preferred foods saved yet.</p>
           </Card>
-        ))}
-      </div>
+        ) : (
+          <div className="grid gap-3 sm:grid-cols-2">
+            {state.foods.map((food) => (
+              <Card key={food.id} className="shadow-none">
+                <div className="flex items-start gap-3">
+                  <div className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-cream text-lagoon">
+                    <Salad size={18} />
+                  </div>
+                  <div>
+                    <p className="font-black capitalize">{food.name}</p>
+                    <p className="mt-1 text-sm font-semibold capitalize text-stone-500">{food.category}</p>
+                    {food.notes && <p className="mt-2 text-sm text-stone-600">{food.notes}</p>}
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
+        )}
+      </section>
+
+      <section className="space-y-3">
+        <h2 className="text-xl font-black">Suggested foods library</h2>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {suggestedFoods.map((food) => {
+            const saved = state.foods.some((entry) => entry.id === food.id);
+            return (
+              <Card key={food.id} className="shadow-none">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="font-black capitalize">{food.name}</p>
+                    <p className="mt-1 text-sm font-semibold capitalize text-stone-500">{food.category}</p>
+                    {food.notes && <p className="mt-2 text-sm text-stone-600">{food.notes}</p>}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => addSuggestedFood(food)}
+                    disabled={saved}
+                    className="rounded-lg border border-stone-200 px-3 py-2 text-sm font-black text-ink disabled:bg-stone-100 disabled:text-stone-400"
+                  >
+                    {saved ? 'Saved' : 'Add'}
+                  </button>
+                </div>
+              </Card>
+            );
+          })}
+        </div>
+      </section>
     </div>
   );
 }

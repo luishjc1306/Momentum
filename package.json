@@ -1,10 +1,11 @@
 {
-  "name": "wellness-coach-mvp",
+  "name": "momentum",
   "private": true,
   "version": "0.1.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "generate:pwa-assets": "node scripts/generate-pwa-assets.mjs",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "lint": "eslint ."

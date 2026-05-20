@@ -24,10 +24,10 @@ export const calculateStreak = (logs: DailyLog[]) => {
 
 export const calculateDailyScore = (log: DailyLog, goals: UserGoals) => {
   const calorieScore = log.calories <= goals.dailyCalorieTarget ? 25 : Math.max(0, 25 - (log.calories - goals.dailyCalorieTarget) / 40);
-  const proteinScore = Math.min(25, (log.protein / goals.proteinTarget) * 25);
+  const proteinScore = goals.proteinTarget > 0 ? Math.min(25, (log.protein / goals.proteinTarget) * 25) : 0;
   const workoutScore = log.workoutDurationMinutes > 0 ? 15 : 0;
-  const walkingScore = Math.min(15, (log.cardioDistanceMiles / goals.walkingTargetMiles) * 15);
-  const sleepScore = Math.min(20, (log.sleepHours / goals.sleepTargetHours) * 20);
+  const walkingScore = goals.walkingTargetMiles > 0 ? Math.min(15, (log.cardioDistanceMiles / goals.walkingTargetMiles) * 15) : 0;
+  const sleepScore = goals.sleepTargetHours > 0 ? Math.min(20, (log.sleepHours / goals.sleepTargetHours) * 20) : 0;
 
   return Math.round(Math.min(100, calorieScore + proteinScore + workoutScore + walkingScore + sleepScore));
 };
@@ -39,6 +39,6 @@ export const getLevel = (xp: number) => {
 };
 
 export const getWeightDelta = (state: WellnessState) => {
-  const current = getLatestLog(state.logs).weight;
+  const current = getLatestLog(state.logs)?.weight ?? state.goals.startingWeight;
   return Number((state.goals.startingWeight - current).toFixed(1));
 };
