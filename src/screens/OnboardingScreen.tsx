@@ -85,7 +85,7 @@ export function OnboardingScreen({ onComplete }: OnboardingScreenProps) {
             </motion.div>
             <h1 className="text-4xl font-black leading-tight tracking-normal">Welcome to Momentum</h1>
             <p className="mx-auto mt-4 max-w-xs text-lg leading-7 text-stone-600 dark:text-white/70">
-              Build better habits without obsessing over perfection.
+              Build momentum. One day at a time.
             </p>
             <OnboardingButton className="mt-10" onClick={() => setStep(1)}>
               Get Started
